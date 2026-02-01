@@ -1,0 +1,36 @@
+# Swap files
+*.swp
+*.swo
+*.swn
+*.swm
+
+# Undo files
+*.un~
+*.undo
+
+# Backup files
+*~
+*.bak
+
+# Session files
+Session.vim
+
+# Nvim compiled Lua cache
+*.luac
+*.cache
+lua_cache/
+__pycache__/
+
+# Plugin manager folders (if local)
+pack/*/opt/*
+pack/*/start/*
+
+# Nvim logs
+*.log
+nvchad_cache/
+lazy-lock.json
+lazy-lock.toml
+
+# OS-specific
+.DS_Store
+Thumbs.db

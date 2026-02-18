@@ -13,7 +13,7 @@ function _Kustomize.build(overlay)
     Config.kustomize.path .. "/overlays/" .. overlay,
   }
 
-  if Config.kustomize.args then
+  if not vim.tbl_isempty(Config.kustomize.args) then
     local args = Utils.parce_options_to_flags(Config.kustomize.args)
     table.insert(cmd, args)
   end

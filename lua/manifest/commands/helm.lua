@@ -4,13 +4,15 @@ local Config = require("manifest.config")
 --- @class _Helm
 local _Helm = {}
 
+--- @param release string
 --- @param chart string
 --- @param values string?
 --- @return string[]
-function _Helm.template(chart, values)
+function _Helm.template(release, chart, values)
   local cmd = {
     "helm",
     "template",
+    release,
     chart
   }
 
@@ -19,7 +21,7 @@ function _Helm.template(chart, values)
     table.insert(cmd, values)
   end
 
-  if Config.helm.args then
+  if not vim.tbl_isempty(Config.helm.args) then
     local args = Utils.parce_options_to_flags(Config.helm.args)
     table.insert(cmd, args)
   end
@@ -35,7 +37,7 @@ function _Helm.complete(arg_lead, cmd_line, cursor_pos)
   local before_cursor = cmd_line:sub(1, cursor_pos)
   local args = vim.split(before_cursor, " ")
   local arg_index = #args - 1
-  if arg_index == 1 then
+  if arg_index == 2 then
     local output = vim.fn.systemlist({ "helm", "search", "repo", "-o", "json" })
 
     if vim.v.shell_error ~= 0 then
@@ -61,7 +63,7 @@ function _Helm.complete(arg_lead, cmd_line, cursor_pos)
     return vim.tbl_filter(function(chart)
       return vim.startswith(chart, arg_lead)
     end, charts)
-  elseif arg_index == 2 then
+  elseif arg_index == 3 then
     local files = vim.fn.glob("**/*values.y*ml", 0, 1)
     return vim.tbl_filter(function(file)
       return vim.startswith(file, arg_lead)

@@ -45,8 +45,9 @@ function _Manifest.setup(options)
   vim.api.nvim_create_user_command(
     "HelmTemplate",
     function(opts)
-      local chart = opts.fargs[1]
-      local values = opts.fargs[2]
+      local release = opts.fargs[1]
+      local chart = opts.fargs[2]
+      local values = opts.fargs[3]
       local output = {}
 
       if not chart then
@@ -55,9 +56,9 @@ function _Manifest.setup(options)
       end
 
       if values then
-        output = Command.helm.template(chart, values)
+        output = Command.helm.template(release, chart, values)
       else
-        output = Command.helm.template(chart)
+        output = Command.helm.template(release, chart)
       end
 
       if vim.v.shell_error ~= 0 then
@@ -68,7 +69,7 @@ function _Manifest.setup(options)
       Buffer.window({
         output = output,
         args = opts.args,
-        name = "# Helm Chart: " .. opts.fargs[1],
+        name = "# Helm Chart: " .. opts.fargs[2],
         filetype = "yaml",
       })
     end, {

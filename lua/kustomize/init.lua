@@ -1,53 +1,47 @@
 local Config = require("kustomize.config")
 local Command = require("kustomize.commands")
-local Provider = require("kustomize.providers")
+local Buffer = require("kustomize.buffers")
 
 
---- @class _Kustomize.Options.Commands.Build
+--- @class _Manifest.Options.Commands.Build
 --- @field flags string[]
 
---- @class _Kustomize.Options.Commands
---- @field build _Kustomize.Options.Commands.Build
+--- @class _Manifest.Options.Commands
+--- @field build _Manifest.Options.Commands.Build
 
 
---- @class _Kustomize.Options
+--- @class _Manifest.Options
 --- @field provider "default" | "snacks"
---- @field commands _Kustomize.Options.Commands
+--- @field commands _Manifest.Options.Commands
 
---- @class _Kustomize
-local _Kustomize = {}
+--- @class _Manifest
+local _Manifest = {}
 
---- @param overlay string
-function _Kustomize.build(overlay)
-  local output = Command.build(overlay)
-
-  if vim.v.shell_error ~= 0 then
-    vim.notify("Error: Could not run kustomize build\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
-    return
-  end
-
-  Provider.window({
-    output = output,
-    args = overlay,
-    name = "# Kustomize Build: " .. overlay,
-    filetype = "yaml",
-  })
-end
-
---- @param options _Kustomize.Options?
-function _Kustomize.setup(options)
+--- @param options _Manifest.Options?
+function _Manifest.setup(options)
   Config.mutate(options)
-  Provider.set()
   vim.api.nvim_create_user_command(
     "KustomizeBuild",
     function(opts)
-      _Kustomize.build(opts.args)
+      local output = Command.kustomize.build(opts.args)
+
+      if vim.v.shell_error ~= 0 then
+        vim.notify("Error: Could not run kustomize build\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
+        return
+      end
+
+      Buffer.window({
+        output = output,
+        args = opts.args,
+        name = "# Kustomize Build: " .. opts.args,
+        filetype = "yaml",
+      })
     end, {
       nargs = 1,
       desc = "kustomize build manifest view",
-      complete = Command.complete
+      complete = Command.kustomize.complete
     }
   )
 end
 
-return _Kustomize
+return _Manifest

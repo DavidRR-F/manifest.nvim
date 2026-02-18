@@ -1,12 +1,16 @@
-# Kustomize.nvim
+# manifest.nvim
 
-Kustomize user command integrations in neovim
+> Still In Development
+
+Yaml Manifest Viewer user command integrations in neovim
 
 ### Current User Commands
 
 | Command | Example | Description |
 |:--------|:--------|:------------|
 | KustomizeBuild | KustomizeBuild dev | build kustomize overlay manifest and view in floating window w/ overlay autocompletion |
+| HelmShowTemplate | HelmShowTemplate argo/argo-workflow | build helm chart manifest and view in floating window w/ overlay autocompletion |
+
 
 ### Install & Configuration
 
@@ -14,21 +18,51 @@ Kustomize user command integrations in neovim
 
 ```lua
 {
-  "DavidRR-F/kustomize.nvim",
+  "DavidRR-F/manifest.nvim",
+  -- default options
   opts = {
-    -- extension providers "default" | "snacks"
-    -- snacks requires installing snacks.nvim
-    provider = "default",
-    -- default pwd of kustomize directory in projects
-    path = ".",
-    -- command flag arguments (supports boolean|string|string[] atributes)
-    -- Ex: --enable-helm -> enable_helm = true
-    -- Ex: --helm-kube-version -> helm_kube_version = "1.21"
-    -- Ex: --env -> env = {"FOO", "BAR"}
-    commands = {
-      build = {
-        enable_helm = true
-      }
+    -- enable yq search for floating buffers
+    -- requires yq cli installed when enabled
+    yq = {
+      enabled = true,
+      -- default | diff
+      view = "default"
+    },
+    kustomize = {
+      enabled = true,
+      -- default pwd of kustomize directory in projects
+      path = "./kustomize",
+      -- optional command flag arguments (supports boolean|string|string[] atributes)
+      -- Ex: --enable-helm -> enable_helm = true
+      -- Ex: --helm-kube-version -> helm_kube_version = "1.21"
+      -- Ex: --env -> env = {"FOO", "BAR"}
+      --   args = {
+      --     enable helm requires helm cli when enabled
+      --     enable_helm = true,
+      --     helm_kube_version = "1.21",
+      --     env = {"FOO", "BAR"}
+      --   }
+      args = {}
+    },
+    helm = {
+      enabled = true,
+      -- default pwd of values file
+      path = ".",
+      -- optional command flag arguments (supports boolean|string|string[] atributes)
+      -- Ex: --enable-helm -> enable_helm = true
+      -- Ex: --helm-kube-version -> helm_kube_version = "1.21"
+      -- Ex: --env -> env = {"FOO", "BAR"}
+      --   args = {
+      --     enable helm requires helm cli when enabled
+      --     enable_helm = true,
+      --     helm_kube_version = "1.21",
+      --     env = {"FOO", "BAR"}
+      --   }
+      args = {}
+    },
+    -- default height and width percentage of floating windows
+    style = {
+      win = { height = 0.6, width = 0.8 }
     }
   }
 }
@@ -37,6 +71,6 @@ Kustomize user command integrations in neovim
 ### TODO
   - [x] `KustomizeBuild` user command w/ autocompletion
   - [ ] `KustomizeBuildRepo` user command w/ autocompletion
-  - [ ] `KustomizeCreate` user command
-  - [ ] `KustomizeCreateTemplate` user command
-  - [ ] Picker extensions snacks/telescope
+  - [ ] `HelmShowTemplate` user command w/ autocompletion
+  - [ ] `ManifestView` user command w/ autocompletion
+  - [x] add yq search option to floating build buffer

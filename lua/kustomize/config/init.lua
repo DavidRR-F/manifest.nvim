@@ -4,12 +4,22 @@
 --- @field commands table
 --- @field mutate fun(opts: table|nil)
 local _Config = {
-  provider = "default",
-  path = "./deploy",
-  commands = {
-    build = {
-      enable_helm = true,
-    },
+  yq = {
+    enabled = true,
+    view = "default",
+  },
+  kustomize = {
+    enabled = true,
+    path = "./kustomize",
+    args = {}
+  },
+  helm = {
+    enabled = true,
+    path = "./helm",
+    args = {}
+  },
+  style = {
+    win = { width = 0.6, height = 0.8 }
   }
 }
 

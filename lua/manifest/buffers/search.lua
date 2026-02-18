@@ -1,5 +1,5 @@
-local Utils = require("kustomize.buffers.utils")
-local Command = require("kustomize.commands")
+local Utils = require("manifest.buffers.utils")
+local Command = require("manifest.commands")
 --- @class _Search
 local _Search = {}
 

@@ -9,7 +9,7 @@ Yaml Manifest Viewer user command integrations in neovim
 | Command | Example | Description |
 |:--------|:--------|:------------|
 | KustomizeBuild | KustomizeBuild dev | build kustomize overlay manifest and view in floating window w/ overlay autocompletion |
-| HelmShowTemplate | HelmShowTemplate argo/argo-workflow | build helm chart manifest and view in floating window w/ overlay autocompletion |
+| HelmTemplate | HelmTemplate argo/argo-workflow values.yaml | build helm chart manifest and view in floating window w/ overlay autocompletion |
 
 
 ### Install & Configuration
@@ -46,8 +46,6 @@ Yaml Manifest Viewer user command integrations in neovim
     },
     helm = {
       enabled = true,
-      -- default pwd of values file
-      path = ".",
       -- optional command flag arguments (supports boolean|string|string[] atributes)
       -- Ex: --enable-helm -> enable_helm = true
       -- Ex: --helm-kube-version -> helm_kube_version = "1.21"
@@ -71,6 +69,6 @@ Yaml Manifest Viewer user command integrations in neovim
 ### TODO
   - [x] `KustomizeBuild` user command w/ autocompletion
   - [ ] `KustomizeBuildRepo` user command w/ autocompletion
-  - [ ] `HelmShowTemplate` user command w/ autocompletion
+  - [x] `HelmShowTemplate` user command w/ autocompletion
   - [ ] `ManifestView` user command w/ autocompletion
   - [x] add yq search option to floating build buffer

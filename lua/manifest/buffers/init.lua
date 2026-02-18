@@ -1,6 +1,6 @@
-local Config = require("kustomize.config")
-local Search = require("kustomize.buffers.search")
-local Result = require("kustomize.buffers.result")
+local Config = require("manifest.config")
+local Search = require("manifest.buffers.search")
+local Result = require("manifest.buffers.result")
 
 --- @class _Buffer
 local _Buffer = {}

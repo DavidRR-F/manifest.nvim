@@ -1,4 +1,4 @@
-local Utils = require("kustomize.buffers.utils")
+local Utils = require("manifest.buffers.utils")
 --- @class _Result
 local _Result = {}
 

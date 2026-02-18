@@ -62,7 +62,7 @@ function _Helm.complete(arg_lead, cmd_line, cursor_pos)
       return vim.startswith(chart, arg_lead)
     end, charts)
   elseif arg_index == 2 then
-    local files = vim.fn.glob("**/values.y*ml", 0, 1)
+    local files = vim.fn.glob("**/*values.y*ml", 0, 1)
     return vim.tbl_filter(function(file)
       return vim.startswith(file, arg_lead)
     end, files)

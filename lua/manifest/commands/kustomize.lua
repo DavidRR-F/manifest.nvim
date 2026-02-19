@@ -1,5 +1,6 @@
 local Config = require("manifest.config")
 local Utils = require("manifest.commands.utils")
+local Buffer = require("manifest.buffers")
 
 --- @class _Kustomize
 local _Kustomize = {}
@@ -19,6 +20,23 @@ function _Kustomize.build(overlay)
   end
 
   return vim.fn.systemlist(cmd)
+end
+
+--- @param opts vim.api.keyset.create_user_command.command_args
+function _Kustomize.user_command(opts)
+  local output = _Kustomize.build(opts.args)
+
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Error: Could not run kustomize build\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
+    return
+  end
+
+  Buffer.window({
+    output = output,
+    args = opts.args,
+    name = "# Kustomize Build: " .. opts.args,
+    filetype = "yaml",
+  })
 end
 
 --- @param arg_lead string

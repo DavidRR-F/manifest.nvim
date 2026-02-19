@@ -15,7 +15,10 @@ local _Config = {
   },
   helm = {
     enabled = true,
-    path = "./helm",
+    args = {}
+  },
+  cue = {
+    enabled = true,
     args = {}
   },
   style = {

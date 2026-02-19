@@ -1,5 +1,5 @@
 local Utils = require("manifest.buffers.utils")
-local Command = require("manifest.commands")
+local Yq = require("manifest.commands.yq")
 --- @class _Search
 local _Search = {}
 
@@ -47,7 +47,7 @@ function _Search:update(buf, query, output)
   -- Write YAML to temp file
   local tmpfile = vim.fn.tempname() .. ".yaml"
   vim.fn.writefile(output, tmpfile)
-  local result = Command.yq.query(query, tmpfile)
+  local result = Yq.query(query, tmpfile)
   local exit_code = vim.v.shell_error
 
   vim.fn.delete(tmpfile)

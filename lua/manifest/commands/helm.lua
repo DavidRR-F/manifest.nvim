@@ -1,5 +1,6 @@
 local Utils = require("manifest.commands.utils")
 local Config = require("manifest.config")
+local Buffer = require("manifest.buffers")
 
 --- @class _Helm
 local _Helm = {}
@@ -27,6 +28,37 @@ function _Helm.template(release, chart, values)
   end
 
   return vim.fn.systemlist(cmd)
+end
+
+--- @param opts vim.api.keyset.create_user_command.command_args
+function _Helm.user_command(opts)
+  local release = opts.fargs[1]
+  local chart = opts.fargs[2]
+  local values = opts.fargs[3]
+  local output = {}
+
+  if not chart or not release then
+    vim.notify("Error: release and chart name is required")
+    return
+  end
+
+  if values then
+    output = _Helm.template(release, chart, values)
+  else
+    output = _Helm.template(release, chart)
+  end
+
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Error: Could not run helm template\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
+    return
+  end
+
+  Buffer.window({
+    output = output,
+    args = opts.args,
+    name = "# Helm Chart: " .. opts.fargs[2],
+    filetype = "yaml",
+  })
 end
 
 --- @param arg_lead string

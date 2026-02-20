@@ -41,6 +41,24 @@ function _Manifest.setup(options)
         complete = Command.helm.template.complete
       }
     )
+    vim.api.nvim_create_user_command(
+      "HelmShowValues",
+      Command.helm.show.usr_cmd,
+      {
+        nargs = "*",
+        desc = "helm template manifest view",
+        complete = Command.helm.show.complete
+      }
+    )
+    vim.api.nvim_create_user_command(
+      "HelmDiffValues",
+      Command.helm.diff.usr_cmd,
+      {
+        nargs = "*",
+        desc = "helm values diff view",
+        complete = Command.helm.show.complete
+      }
+    )
   end
 
   if Config.cue.enabled then

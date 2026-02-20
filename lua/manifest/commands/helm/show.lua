@@ -6,9 +6,9 @@ local Buffer = require("manifest.buffers")
 --- @field cmd fun(chart: string): string[]
 --- @field usr_cmd fun(opts: vim.api.keyset.create_user_command.command_args)
 --- @field complete fun(arg_lead: string, cmd_line: string, cursor_pos: integer): string[]
-local _Template = {}
+local _Show = {}
 
-function _Template.cmd(chart)
+function _Show.cmd(chart)
   local cmd = {
     "helm",
     "show",
@@ -24,22 +24,8 @@ function _Template.cmd(chart)
   return vim.fn.systemlist(cmd)
 end
 
-function _Template.usr_cmd(opts)
-  local release = opts.fargs[1]
-  local chart = opts.fargs[2]
-  local values = opts.fargs[3]
-  local output = {}
-
-  if not chart or not release then
-    vim.notify("Error: release and chart name is required")
-    return
-  end
-
-  if values then
-    output = _Template.cmd(release, chart, values)
-  else
-    output = _Template.cmd(release, chart)
-  end
+function _Show.usr_cmd(opts)
+  local output = _Show.cmd(opts.fargs[1])
 
   if vim.v.shell_error ~= 0 then
     vim.notify("Error: Could not run helm template\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
@@ -49,49 +35,37 @@ function _Template.usr_cmd(opts)
   Buffer.window({
     output = output,
     args = opts.args,
-    name = "# Helm Chart: " .. opts.fargs[2],
+    name = "# Helm Values: " .. opts.fargs[1],
     filetype = "yaml",
   })
 end
 
-function _Template.complete(arg_lead, cmd_line, cursor_pos)
-  local before_cursor = cmd_line:sub(1, cursor_pos)
-  local args = vim.split(before_cursor, " ")
-  local arg_index = #args - 1
-  if arg_index == 2 then
-    local output = vim.fn.systemlist({ "helm", "search", "repo", "-o", "json" })
+function _Show.complete(arg_lead, _, _)
+  local output = vim.fn.systemlist({ "helm", "search", "repo", "-o", "json" })
 
-    if vim.v.shell_error ~= 0 then
-      vim.notify("Error: Could not run helm search repo\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
-      return {}
-    end
-
-    local json_str = table.concat(output, "\n")
-
-    local ok, decoded = pcall(vim.json.decode, json_str)
-    if not ok or type(decoded) ~= "table" then
-      vim.notify("Failed to decode JSON from helm search")
-      return {}
-    end
-
-    local charts = {}
-    for _, item in ipairs(decoded) do
-      if item.name then
-        table.insert(charts, item.name)
-      end
-    end
-
-    return vim.tbl_filter(function(chart)
-      return vim.startswith(chart, arg_lead)
-    end, charts)
-  elseif arg_index == 3 then
-    local files = vim.fn.glob("**/*values.y*ml", 0, 1)
-    return vim.tbl_filter(function(file)
-      return vim.startswith(file, arg_lead)
-    end, files)
-  else
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Error: Could not run helm search repo\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
     return {}
   end
+
+  local json_str = table.concat(output, "\n")
+
+  local ok, decoded = pcall(vim.json.decode, json_str)
+  if not ok or type(decoded) ~= "table" then
+    vim.notify("Failed to decode JSON from helm search")
+    return {}
+  end
+
+  local charts = {}
+  for _, item in ipairs(decoded) do
+    if item.name then
+      table.insert(charts, item.name)
+    end
+  end
+
+  return vim.tbl_filter(function(chart)
+    return vim.startswith(chart, arg_lead)
+  end, charts)
 end
 
-return _Template
+return _Show

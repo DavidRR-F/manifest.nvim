@@ -89,13 +89,3 @@ manifest.kustomize.build.cmd(overlay)
 --- @return string[]
 manifest.yq.eval.cmd(query, file)
 ```
-
-### TODO
-  - [x] `KustomizeBuild` user command w/ autocompletion
-  - [x] `HelmTemplate` user command w/ autocompletion
-  - [x] `HelmShowValues` user command w/ autocompletion
-  - [x] `HelmDiffValues` user command w/ autocompletion
-  - [x] `CueExport` user command w/ autocompletion
-  - [x] `YqEval` user command w/ autocompletion
-  - [ ] add yq search diff floating build buffer option
-  - [x] add yq search option to floating build buffer

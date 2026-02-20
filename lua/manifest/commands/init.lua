@@ -1,14 +1,13 @@
-local Kustomize = require("manifest.commands.kustomize")
-local Helm = require("manifest.commands.helm")
-local Cue = require("manifest.commands.cue")
-local Yq = require("manifest.commands.yq")
-
---- @class _Command
+--- @class Command
+--- @field kustomize Kustomize
+--- @field helm Helm
+--- @field cue Cue
+--- @field yq Yq
 local _Command = {
-  kustomize = Kustomize,
-  helm = Helm,
-  cue = Cue,
-  yq = Yq
+  kustomize = require("manifest.commands.kustomize"),
+  helm = require("manifest.commands.helm"),
+  cue = require("manifest.commands.cue"),
+  yq = require("manifest.commands.yq"),
 }
 
 return _Command

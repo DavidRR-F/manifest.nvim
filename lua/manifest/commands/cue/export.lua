@@ -1,13 +1,14 @@
-local Utils = require("manifest.commands.utils")
+local Utils = require("manifest.commands.core")
 local Config = require("manifest.config")
 local Buffer = require("manifest.buffers")
 
---- @class _Cue
-local _Cue = {}
+--- @class Cue.Export
+--- @field cmd fun(path: string): string[]
+--- @field usr_cmd fun(opts: vim.api.keyset.create_user_command.command_args)
+--- @field complete fun(arg_lead: string, _, _): string[]
+local _Export = {}
 
---- @param path string
---- @return string[]
-function _Cue.export(path)
+function _Export.cmd(path)
   local cmd = {
     "cue",
     "export",
@@ -25,8 +26,8 @@ function _Cue.export(path)
 end
 
 --- @param opts vim.api.keyset.create_user_command.command_args
-function _Cue.user_command(opts)
-  local output = _Cue.export(opts.args)
+function _Export.usr_cmd(opts)
+  local output = _Export.cmd(opts.args)
 
   if vim.v.shell_error ~= 0 then
     vim.notify("Error: Could not run cue export\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
@@ -43,8 +44,8 @@ end
 
 --- @param arg_lead string
 --- @return string[]
-function _Cue.complete(arg_lead, _, _)
+function _Export.complete(arg_lead, _, _)
   return vim.fn.glob(arg_lead .. '*', 0, 1)
 end
 
-return _Cue
+return _Export

@@ -9,4 +9,8 @@ function _Utils.size(w, h)
   return width, height, row, col
 end
 
+function _Utils.search(file, query)
+  return vim.fn.systemlist({ "yq", query, file })
+end
+
 return _Utils

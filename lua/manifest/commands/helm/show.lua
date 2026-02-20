@@ -1,26 +1,20 @@
-local Utils = require("manifest.commands.utils")
+local Utils = require("manifest.commands.core")
 local Config = require("manifest.config")
 local Buffer = require("manifest.buffers")
 
---- @class _Helm
-local _Helm = {}
+--- @class Helm.Show
+--- @field cmd fun(chart: string): string[]
+--- @field usr_cmd fun(opts: vim.api.keyset.create_user_command.command_args)
+--- @field complete fun(arg_lead: string, cmd_line: string, cursor_pos: integer): string[]
+local _Template = {}
 
---- @param release string
---- @param chart string
---- @param values string?
---- @return string[]
-function _Helm.template(release, chart, values)
+function _Template.cmd(chart)
   local cmd = {
     "helm",
-    "template",
-    release,
+    "show",
+    "values",
     chart
   }
-
-  if values and values ~= "" then
-    table.insert(cmd, "--values")
-    table.insert(cmd, values)
-  end
 
   if not vim.tbl_isempty(Config.helm.args) then
     local args = Utils.parce_options_to_flags(Config.helm.args)
@@ -30,8 +24,7 @@ function _Helm.template(release, chart, values)
   return vim.fn.systemlist(cmd)
 end
 
---- @param opts vim.api.keyset.create_user_command.command_args
-function _Helm.user_command(opts)
+function _Template.usr_cmd(opts)
   local release = opts.fargs[1]
   local chart = opts.fargs[2]
   local values = opts.fargs[3]
@@ -43,9 +36,9 @@ function _Helm.user_command(opts)
   end
 
   if values then
-    output = _Helm.template(release, chart, values)
+    output = _Template.cmd(release, chart, values)
   else
-    output = _Helm.template(release, chart)
+    output = _Template.cmd(release, chart)
   end
 
   if vim.v.shell_error ~= 0 then
@@ -61,11 +54,7 @@ function _Helm.user_command(opts)
   })
 end
 
---- @param arg_lead string
---- @param cmd_line string
---- @param cursor_pos integer
---- @return string[]
-function _Helm.complete(arg_lead, cmd_line, cursor_pos)
+function _Template.complete(arg_lead, cmd_line, cursor_pos)
   local before_cursor = cmd_line:sub(1, cursor_pos)
   local args = vim.split(before_cursor, " ")
   local arg_index = #args - 1
@@ -105,4 +94,4 @@ function _Helm.complete(arg_lead, cmd_line, cursor_pos)
   end
 end
 
-return _Helm
+return _Template

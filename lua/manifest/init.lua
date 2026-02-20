@@ -7,14 +7,26 @@ local _Manifest = {}
 function _Manifest.setup(options)
   Config.mutate(options)
 
+  if Config.yq.enabled then
+    vim.api.nvim_create_user_command(
+      "YqEval",
+      Command.yq.eval.usr_cmd,
+      {
+        nargs = 1,
+        desc = "yaml file manifest view",
+        complete = Command.yq.eval.complete
+      }
+    )
+  end
+
   if Config.kustomize.enabled then
     vim.api.nvim_create_user_command(
       "KustomizeBuild",
-      Command.kustomize.user_command,
+      Command.kustomize.build.usr_cmd,
       {
         nargs = 1,
         desc = "kustomize build manifest view",
-        complete = Command.kustomize.complete
+        complete = Command.kustomize.build.complete
       }
     )
   end
@@ -22,11 +34,11 @@ function _Manifest.setup(options)
   if Config.helm.enabled then
     vim.api.nvim_create_user_command(
       "HelmTemplate",
-      Command.helm.user_command,
+      Command.helm.template.usr_cmd,
       {
         nargs = "*",
         desc = "helm template manifest view",
-        complete = Command.helm.complete
+        complete = Command.helm.template.complete
       }
     )
   end
@@ -34,11 +46,11 @@ function _Manifest.setup(options)
   if Config.cue.enabled then
     vim.api.nvim_create_user_command(
       "CueExport",
-      Command.cue.user_command,
+      Command.cue.export.usr_cmd,
       {
         nargs = 1,
         desc = "cue export manifest view",
-        complete = Command.cue.complete
+        complete = Command.cue.export.complete
       }
     )
   end

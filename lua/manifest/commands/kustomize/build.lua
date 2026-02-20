@@ -34,7 +34,7 @@ function _Build.usr_cmd(opts)
   Buffer.window({
     output = output,
     args = opts.args,
-    name = "# Build Build: " .. opts.args,
+    name = "# Kustomize Build: " .. opts.args,
     filetype = "yaml",
   })
 end

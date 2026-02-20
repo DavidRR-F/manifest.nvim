@@ -54,7 +54,7 @@ function _Template.usr_cmd(opts)
   Buffer.window({
     output = output,
     args = opts.args,
-    name = "# Helm Chart: " .. opts.fargs[2],
+    name = "# Helm Chart: " .. opts.args,
     filetype = "yaml",
   })
 end

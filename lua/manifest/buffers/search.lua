@@ -37,7 +37,7 @@ function _Search:create()
   vim.cmd("startinsert")
 end
 
-function _Search:update(buf, query, output)
+function _Search:update(buf, win, query, output)
   if not query or query == "" then
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, output)
     return
@@ -52,11 +52,10 @@ function _Search:update(buf, query, output)
   vim.fn.delete(tmpfile)
 
   if exit_code ~= 0 then
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, {
+    result = {
       "yq error:",
       unpack(result),
-    })
-    return
+    }
   end
 
   if vim.tbl_isempty(result) then
@@ -64,6 +63,7 @@ function _Search:update(buf, query, output)
   end
 
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, result)
+  vim.api.nvim_win_set_cursor(win, { 1, 0 })
 end
 
 function _Search:resize()

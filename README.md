@@ -17,8 +17,6 @@ Yaml Manifest user command integrations in neovim
     -- requires yq cli installed when enabled
     yq = {
       enabled = true,
-      -- default | diff
-      view = "default"
     },
     kustomize = {
       enabled = true,

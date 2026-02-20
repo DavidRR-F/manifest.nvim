@@ -25,7 +25,7 @@ function _Show.cmd(chart)
 end
 
 function _Show.usr_cmd(opts)
-  local output = _Show.cmd(opts.fargs[1])
+  local output = _Show.cmd(opts.args)
 
   if vim.v.shell_error ~= 0 then
     vim.notify("Error: Could not run helm template\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
@@ -35,7 +35,7 @@ function _Show.usr_cmd(opts)
   Buffer.window({
     output = output,
     args = opts.args,
-    name = "# Helm Values: " .. opts.fargs[1],
+    name = "# Helm Chart: " .. opts.args,
     filetype = "yaml",
   })
 end

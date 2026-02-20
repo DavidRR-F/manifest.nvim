@@ -22,7 +22,7 @@ function _Diff.cmd(chart)
 end
 
 function _Diff.usr_cmd(opts)
-  local output = _Diff.cmd(opts.fargs[1])
+  local output = _Diff.cmd(opts.args)
   if vim.v.shell_error ~= 0 then
     vim.notify("Error: Could not run helm template\n" .. table.concat(output, "\n"), vim.log.levels.ERROR)
     return

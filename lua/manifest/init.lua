@@ -45,7 +45,7 @@ function _Manifest.setup(options)
       "HelmShowValues",
       Command.helm.show.usr_cmd,
       {
-        nargs = "*",
+        nargs = 1,
         desc = "helm template manifest view",
         complete = Command.helm.show.complete
       }
@@ -54,7 +54,7 @@ function _Manifest.setup(options)
       "HelmDiffValues",
       Command.helm.diff.usr_cmd,
       {
-        nargs = "*",
+        nargs = 1,
         desc = "helm values diff view",
         complete = Command.helm.show.complete
       }

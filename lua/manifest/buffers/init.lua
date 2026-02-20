@@ -28,7 +28,7 @@ function _Buffer.window(opts)
 
     vim.fn.prompt_setcallback(search.buf, function(input)
       last_query = input
-      search:update(result.buf, input, opts.output)
+      search:update(result.buf, result.win, input, opts.output)
       vim.api.nvim_set_current_win(result.win)
     end)
 

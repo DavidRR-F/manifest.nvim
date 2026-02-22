@@ -1,6 +1,5 @@
 local Config = require("manifest.config")
-local Search = require("manifest.buffers.search")
-local Result = require("manifest.buffers.result")
+local Manager = require("manifest.buffers.manager")
 
 --- @class _Buffer
 local _Buffer = {}
@@ -18,65 +17,39 @@ function _Buffer.window(opts)
 
   table.insert(opts.output, 1, opts.name)
 
-  local result = Result:new(Config.style.win.width, Config.style.win.height)
-  result:create(opts.output)
+  local windows = Manager:new(Config.style.win.width, Config.style.win.height, Config.yq.enabled, Config.yq.view)
 
-  if Config.yq.enabled then
-    local search = Search:new(" yq> ", Config.style.win.width, Config.style.win.height)
-    search:create()
+  windows:create(opts.output)
+
+  if windows.search then
     local last_query = ""
-
-    vim.fn.prompt_setcallback(search.buf, function(input)
+    vim.fn.prompt_setcallback(windows.search.buf, function(input)
       last_query = input
-      search:update(result.buf, result.win, input, opts.output)
-      vim.api.nvim_set_current_win(result.win)
+      windows.search:update(windows.results.buf[#windows.results.buf], windows.results.win[#windows.results.buf], input,
+        opts.output)
+      vim.api.nvim_set_current_win(windows.results.win[#windows.results.buf])
     end)
-
-    vim.keymap.set("n", "/", function()
-      vim.api.nvim_set_current_win(search.win)
-      vim.cmd("startinsert")
-      if last_query ~= "" then
-        vim.api.nvim_buf_set_lines(search.buf, 0, 1, false, { search.prompt })
-        vim.api.nvim_win_set_cursor(search.win, { 1, #search.prompt })
-        vim.fn.feedkeys(last_query, "n")
-      end
-    end, { buffer = result.buf })
-
-    vim.keymap.set("n", "q", function()
-      if vim.api.nvim_win_is_valid(result.win) then
-        vim.api.nvim_win_close(result.win, true)
-      end
-      if vim.api.nvim_win_is_valid(search.win) then
-        vim.api.nvim_win_close(search.win, true)
-      end
-    end, { buffer = result.buf, silent = true })
-
-    vim.keymap.set("n", "q", function()
-      if vim.api.nvim_win_is_valid(result.win) then
-        vim.api.nvim_win_close(result.win, true)
-      end
-      if vim.api.nvim_win_is_valid(search.win) then
-        vim.api.nvim_win_close(search.win, true)
-      end
-    end, { buffer = search.buf, silent = true })
-    vim.api.nvim_create_autocmd("WinResized", {
-      callback = function()
-        result:resize()
-        search:resize()
-      end,
-    })
-  else
-    vim.keymap.set("n", "q", function()
-      if vim.api.nvim_win_is_valid(result.win) then
-        vim.api.nvim_win_close(result.win, true)
-      end
-    end, { buffer = result.buf, silent = true })
-    vim.api.nvim_create_autocmd("WinResized", {
-      callback = function()
-        result:resize()
-      end,
-    })
+    vim.keymap.set("n", "q", function() windows:close() end,
+      { buffer = windows.search.buf, silent = true, noremap = true })
+    --vim.keymap.set("n", "<Tab>", function() windows:focus_results() end,
+    --  { buffer = windows.search.buf, silent = true, noremap = true })
+    --vim.keymap.set("i", "<Tab>", function() windows:focus_results() end,
+    --  { buffer = windows.search.buf, silent = true, noremap = true })
+    vim.keymap.set("n", "/", function() windows:focus_search(last_query) end,
+      { buffer = windows.results.buf[1], silent = true, noremap = true })
+    vim.keymap.set("n", "/", function() windows:focus_search(last_query) end,
+      { buffer = windows.results.buf[#windows.results.buf], silent = true, noremap = true })
   end
+
+  vim.keymap.set("n", "q", function() windows:close() end,
+    { buffer = windows.results.buf[1], silent = true, noremap = true })
+  vim.keymap.set("n", "q", function() windows:close() end,
+    { buffer = windows.results.buf[#windows.results.buf], silent = true, noremap = true })
+  vim.keymap.set("n", "<Tab>", function() windows:focus_results() end,
+    { buffer = windows.results.buf[1], silent = true, noremap = true })
+  vim.keymap.set("n", "<Tab>", function() windows:focus_results() end,
+    { buffer = windows.results.buf[#windows.results.buf], silent = true, noremap = true })
+  vim.api.nvim_create_autocmd("WinResized", { callback = function() windows:resize() end })
 end
 
 return _Buffer

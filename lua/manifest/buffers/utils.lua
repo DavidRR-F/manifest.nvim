@@ -1,3 +1,6 @@
+--- @class _Buffer.Utils
+--- @field size fun(w: integer, h: integer): integer, integer, integer, integer
+--- @field search fun(file: string, query: string): string[]
 local _Utils = {}
 
 function _Utils.size(w, h)

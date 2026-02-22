@@ -1,7 +1,5 @@
 # manifest.nvim
 
-> Still In Development
-
 Yaml Manifest user command integrations in neovim
 
 ### Install & Configuration
@@ -17,6 +15,9 @@ Yaml Manifest user command integrations in neovim
     -- requires yq cli installed when enabled
     yq = {
       enabled = true,
+      -- signal buffer w/ results side by side
+      -- default | diff
+      view = "default"
     },
     kustomize = {
       enabled = true,

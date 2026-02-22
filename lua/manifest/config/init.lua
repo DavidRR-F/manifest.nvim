@@ -6,6 +6,7 @@
 local _Config = {
   yq = {
     enabled = true,
+    view = "default",
   },
   kustomize = {
     enabled = true,
